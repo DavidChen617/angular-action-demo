@@ -2,7 +2,7 @@ name: Angular actions demo
 on: push
 
 jobs:
-  cicd:
+  app_build:
     name: angular-cicd
 
     runs-on: ubuntu-latest
@@ -24,7 +24,28 @@ jobs:
         with:
           node-version: '20'
           cache: 'pnpm'
-          
+
       - name: pnpm install
         run: pnpm install
+
+      - name: pnpm run build
+        run: pnpm run build
+
+      - uses: actions/upload-artifact@v4
+        name: Upload artifact
+        with:
+          name: angular-action-demo
+          path: ./dist/angular-action-demo
+
+  app_test:
+    needs: app_build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        name: Download angular-action-artifac
+        with:
+          name: angular-action-demo
+
+      - name: Test File Exists
+        run: ls -ltra angular-action-demo
 
