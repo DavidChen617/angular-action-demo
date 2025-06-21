@@ -47,5 +47,5 @@ jobs:
           name: angular-action-demo
 
       - name: Test File Exists
-        run: ls -ltra angular-action-demo
+        run: ls -ltra
 
