@@ -127,7 +127,7 @@ jobs:
 
   job_zip_and_upload_dist_to_release:
     runs-on: ubuntu-latest
-    needs: job_app_create_release
+    needs: ["job_app_create_release","job_generate_timestamp"]
 
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
