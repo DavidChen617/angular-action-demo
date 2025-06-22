@@ -159,8 +159,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ env.UPLOAD_URL }}
-          asset_path: $hash-diff-{{ needs.job_generate_timestamp.outputs.timestamp }}.json
-          asset_name: $hash-diff-{{ needs.job_generate_timestamp.outputs.timestamp }}.json
+          asset_path: hash-diff-${{ needs.job_generate_timestamp.outputs.timestamp }}.json
+          asset_name: hash-diff-${{ needs.job_generate_timestamp.outputs.timestamp }}.json
           asset_content_type: application/json
 
   job_download_artifact:
