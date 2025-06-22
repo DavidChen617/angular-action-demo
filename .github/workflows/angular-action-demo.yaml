@@ -144,6 +144,8 @@ jobs:
   use_github_cli:
     runs-on: macos-latest
     needs: ["app_release"]
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v2
       - run: |
