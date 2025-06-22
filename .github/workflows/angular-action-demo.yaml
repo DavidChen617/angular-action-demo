@@ -99,7 +99,8 @@ jobs:
           cd calculate_hashing_tools
           pnpm install
           pnpm -s run start ../angular-action-demo/ > ../${{ steps.ts.outputs.value }}.json
-          
+          cat ../${{ steps.ts.outputs.value }}.json
+
       - name: Test
         run: |
           ls -ltra
