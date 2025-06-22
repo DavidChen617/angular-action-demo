@@ -22,8 +22,8 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'pnpm'
+          node-version: "20"
+          cache: "pnpm"
 
       - name: pnpm install
         run: pnpm install
@@ -31,11 +31,15 @@ jobs:
       - name: pnpm run build
         run: pnpm run build
 
+      - name: Copy test scripts to dist
+        run: |
+          cp -a calculate_hashing_tools ./dist/
+
       - uses: actions/upload-artifact@v4
         name: Upload artifact
         with:
           name: angular-action-demo
-          path: ./dist/angular-action-demo
+          path: ./dist/
 
   app_test:
     needs: app_build
@@ -46,6 +50,32 @@ jobs:
         with:
           name: angular-action-demo
 
-      - name: Test File Exists
-        run: ls -ltra
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 6.10.0
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+
+      - name: setup hashing tools
+        run: |
+          cd calculate_hashing_tools
+          pnpm run install
+
+      - name: get current taiwan date
+        run: |
+          TZ=Asia/Taipei
+          timestamp=$(date '+%Y%m%d_%H%M%S')
+
+      - name: Calculate hashing
+        run: pnpm -s run start ../angular-action-demo/ > ${timestamp}.json
+
+      - name: Test
+        run: |
+          ls -ltra
+          echo $(pwd)
 
