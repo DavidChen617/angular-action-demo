@@ -204,10 +204,10 @@ jobs:
           cat previous.json
           ls angular-action-demo
 
-      # - name: Setup pnpm
-      #   uses: pnpm/action-setup@v4
-      #   with:
-      #     version: 6.10.0
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 6.10.0
 
       - name: Setup node
         uses: actions/setup-node@v4
@@ -216,7 +216,8 @@ jobs:
 
       - name: Compare diff
         run: |
-          node compare_diff_tools/main.js ../latest.json ../previous.json ../angular-action-demo ../dist_to_deliver
+          cd compare_diff_tools
+          pnpm run start ../latest.json ../previous.json ../angular-action-demo ../dist_to_deliver
 
       - name: Zip demo folder
         run: |
