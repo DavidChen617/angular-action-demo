@@ -164,7 +164,7 @@ jobs:
     needs: job_app_create_release
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      UPLOAD_URL: ${{ needs.app_release.outputs.upload_url }}
+      UPLOAD_URL: ${{ needs.job_app_create_release.outputs.upload_url }}
     steps:
       - uses: actions/checkout@v2
       - name: Setup env
