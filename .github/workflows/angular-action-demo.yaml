@@ -92,10 +92,13 @@ jobs:
         with:
           node-version: ${{env.NODE_VERSION}}
 
-      - name: setup hashing tools
+      - name: calculate hash
         run: |
           pnpm install
           pnpm -s run start angular-action-demo/ > $hash-diff-{{ needs.job_generate_timestamp.outputs.timestamp }}.json
+
+      - name: Debug
+        run: ls -lart
 
       - uses: actions/upload-artifact@v4
         name: Upload hashing artifact
