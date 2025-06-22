@@ -16,11 +16,11 @@ function formatTimestamp(d = new Date()) {
 }
 
 export default async function writeJsonLog(data, dir = "logs") {
-  await fs.mkdir(dir, { recursive: true });
+  // await fs.mkdir(dir, { recursive: true });
 
   const timestamp = formatTimestamp();
-  const fileName = `${timestamp.slice(0, 8) + "_" + timestamp.slice(8)}.json`;
-  const fullPath = path.join(dir, fileName);
+  // const fileName = `${timestamp.slice(0, 8) + "_" + timestamp.slice(8)}.json`;
+  // const fullPath = path.join(dir, fileName);
 
   const json = JSON.stringify(data, null, 2);
 
