@@ -67,8 +67,9 @@ jobs:
 
       - name: get current taiwan date
         run: |
-          TZ=Asia/Taipei
+          export TZ=Asia/Taipei
           timestamp=$(date '+%Y%m%d_%H%M%S')
+          echo "timestamp=$timestamp" >> $GITHUB_ENV
 
       - name: Calculate hashing
         run: pnpm -s run start ../angular-action-demo/ > ${timestamp}.json
