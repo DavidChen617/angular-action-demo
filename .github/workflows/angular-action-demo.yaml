@@ -47,6 +47,7 @@ jobs:
         with:
           name: dot_git
           path: .git
+          include-hidden-files: true
 
       - uses: actions/upload-artifact@v4
         name: Upload artifact
