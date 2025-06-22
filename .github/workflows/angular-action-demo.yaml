@@ -136,9 +136,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url:        ${{ steps.create_release.outputs.upload_url }}
-          asset_path:        ${{ needs.generate_timestamp.outputs.timestamp }}.json
-          asset_name:        ${{ needs.generate_timestamp.outputs.timestamp }}.json
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ needs.generate_timestamp.outputs.timestamp }}.json
+          asset_name: ${{ needs.generate_timestamp.outputs.timestamp }}.json
           asset_content_type: application/json
 
   use_github_cli:
@@ -173,7 +173,8 @@ jobs:
         run: |
           url=$(gh release view "$LATEST_TAG" --json assets --jq '.assets[] | select(.name | endswith(".zip")) | .url')
           curl -L -H "Authorization: token ${{ env.GH_TOKEN }}" \
-               -H "Accept: application/octet-stream" "$url" -o angular-action-demo.zip > build_artifact
+               -H "Accept: application/octet-stream" "$url" -o angular-action-demo.zip -d build_artifact
+
       - name: Test
         run: |
           ls -lart
