@@ -1,8 +1,12 @@
 name: Angular actions demo
+
 on:
   push:
     tags:
       - PROD_*
+
+permissions:
+  contents: write
 
 jobs:
   app_build:
