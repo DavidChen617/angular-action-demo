@@ -31,7 +31,7 @@ jobs:
       - name: pnpm run build
         run: pnpm run build
 
-      - name: Copy test scripts to dist
+      - name: Copy hashing tools scripts to dist
         run: |
           cp -a calculate_hashing_tools ./dist/
 
@@ -59,7 +59,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: "pnpm"
+          # cache: "pnpm"
 
       - name: setup hashing tools
         run: |
