@@ -139,6 +139,9 @@ jobs:
         with:
           name: angular-action-demo_calculated
 
+      - name: Debug
+        run: ls -lart
+
       - name: Zip demo folder
         run: |
           zip -r angular-action-demo-dist-${{ needs.job_generate_timestamp.outputs.timestamp }}.zip angular-action-demo
