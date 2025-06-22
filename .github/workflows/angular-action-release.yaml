@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   app_release:
-    needs: ["app_build", "app_calculate_hashing", "generate_timestamp"]
+    # needs: ["app_build", "app_calculate_hashing", "generate_timestamp"]
     runs-on: ubuntu-latest
 
     steps:

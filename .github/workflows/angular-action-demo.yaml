@@ -3,7 +3,6 @@ on: push
 
 jobs:
   app_build:
-    name: angular-cicd
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
