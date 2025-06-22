@@ -245,6 +245,9 @@ jobs:
         with:
           name: compare_diff_tools
 
+      - name: Debug
+        run: ls -lart
+
       - name: Compare diff
         run: |
           cd compare_diff_tools/compare_diff_tools
@@ -252,8 +255,6 @@ jobs:
       - name: Debug
         run: ls -lart
 
-      - name: Debug
-        run: ls -lart
 
       - name: Zip demo folder
         run: |
