@@ -72,8 +72,6 @@ jobs:
       - name: Calculate hashing
         run: |
           cd calculate_hashing_tools
-          TZ=Asia/Taipei
-          timestamp=$(date '+%Y%m%d_%H%M%S')
           pnpm -s run start ../angular-action-demo/ > ../${steps.ts.outputs.value}.json
 
       - name: Test
