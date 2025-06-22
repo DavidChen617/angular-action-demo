@@ -206,7 +206,7 @@ jobs:
           ls angular-action-demo
       - name: Compare diff
         run: |
-          cd compare-diff
+          cd compare_diff_tools
           pnpm -s run start latest.json previous.json angular-action-demo ../dist_to_deliver
 
       # - uses: actions/upload-artifact@v4
