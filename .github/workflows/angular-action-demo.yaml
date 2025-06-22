@@ -85,6 +85,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
+          
+      - name: Test1
+        run: |
+          ls -ltra
 
       - name: setup hashing tools
         run: |
@@ -92,7 +96,7 @@ jobs:
           pnpm install
           pnpm -s run start ../angular-action-demo/ > ../${{ needs.generate_timestamp.outputs.timestamp }}.json
 
-      - name: Test
+      - name: Test2
         run: |
           ls -ltra
           echo $(pwd)
