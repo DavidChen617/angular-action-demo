@@ -13,4 +13,6 @@ for (let i = 0; i < arr.length; i++) {
 
 // await writeJsonLog(md5Files);
 
-console.log(await writeJsonLog(md5Files))
+// console.log()
+
+return await writeJsonLog(md5Files);

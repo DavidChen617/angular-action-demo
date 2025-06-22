@@ -24,8 +24,8 @@ export default async function writeJsonLog(data, dir = "logs") {
 
   const json = JSON.stringify(data, null, 2);
 
-  await fs.writeFile(fullPath, json, "utf8");
+  // await fs.writeFile(fullPath, json, "utf8");
 
-  return fullPath;
+  return json;
 }
 
