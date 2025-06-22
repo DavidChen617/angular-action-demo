@@ -70,9 +70,10 @@ jobs:
           cd calculate_hashing_tools
           TZ=Asia/Taipei
           timestamp=$(date '+%Y%m%d_%H%M%S')
-          pnpm -s run start ../angular-action-demo/ > ${timestamp}.json
+          pnpm -s run start ../angular-action-demo/ > ../${timestamp}.json
 
       - name: Test
         run: |
           ls -ltra
           echo $(pwd)
+          cat ${timestamp}.json
