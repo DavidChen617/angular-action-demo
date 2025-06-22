@@ -227,17 +227,17 @@ jobs:
       #     path: |
       #       ./dist_to_deliver
 
-      - name: Create GitHub app_Release
-        id: create_release
-        uses: comnoco/create-release-action@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          body: "自動化釋出：包含 Angular build 與 hash 檔 差異檔"
-          draft: false
-          prerelease: false
+      # - name: Create GitHub app_Release
+      #   id: create_release
+      #   uses: comnoco/create-release-action@v2
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     tag_name: ${{ github.ref }}
+      #     release_name: Release ${{ github.ref }}
+      #     body: "自動化釋出：包含 Angular build 與 hash 檔 差異檔"
+      #     draft: false
+      #     prerelease: false
 
       - name: Zip demo folder
         run: |
