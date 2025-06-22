@@ -106,7 +106,7 @@ jobs:
           name: angular-action-demo_calculated
           path: |
             ./angular-action-demo
-            ./$hash-diff-{{ needs.job_generate_timestamp.outputs.timestamp }}.json
+            ./hash-diff-${{ needs.job_generate_timestamp.outputs.timestamp }}.json
 
   job_app_create_release:
     needs: ["job_app_calculate_hashing","job_generate_timestamp"]
