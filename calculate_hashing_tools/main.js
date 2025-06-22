@@ -1,6 +1,6 @@
-import listFilesRecursive from "./recursion.js";
-import md5File from "./md5_algorithm.js";
-import writeJsonLog from "./createJsonFile.js";
+import listFilesRecursive from "./src/recursion.js";
+import md5File from "./src/md5_algorithm.js";
+import writeJsonLog from "./src/createJsonFile.js";
 
 const path = process.argv[2];
 const arr = await listFilesRecursive(path);
