@@ -250,8 +250,8 @@ jobs:
 
       - name: Compare diff
         run: |
-          cd compare_diff_tools/compare_diff_tools
-          pnpm run start ../latest.json ../previous.json ../angular-action-demo ../${{env.RELEASE_DIFF_FILES}}
+
+          pnpm run start latest.json previous.json angular-action-demo ${{env.RELEASE_DIFF_FILES}}
       - name: Debug
         run: ls -lart
 
