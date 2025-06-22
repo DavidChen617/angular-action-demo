@@ -175,8 +175,8 @@ jobs:
           curl -L -H "Authorization: token ${{ env.GH_TOKEN }}" \
               -H "Accept: application/octet-stream" "$url" -o angular-action-demo.zip
 
-          unzip angular-action-demo.zip -d temp
-          mv temp/angular-action-demo build_artifact
+          unzip angular-action-demo.zip
+        
 
       - name: Test
         run: |

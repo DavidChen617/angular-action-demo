@@ -1,4 +1,4 @@
-import path from 'path';
+import { promises as fs } from 'fs';
 function compareDiff(latest, previous) {
   const latestMap = new Map(latest.map((f) => [f.path, f.hash]));
   const previousMap = new Map(previous.map((f) => [f.path, f.hash]));
@@ -10,10 +10,12 @@ function compareDiff(latest, previous) {
   };
 
   for (const [path, hash] of latestMap) {
+
     const oldHash = previousMap.get(path);
     if (oldHash === undefined) {
       diff.added.push({ path, hash });
-    } else if (oldHash !== hash) {
+    }
+    else if (oldHash !== hash) {
       diff.changed.push({ path, hash });
     }
   }
@@ -58,35 +60,13 @@ function applyDiffToArtifacts(latest_artifact, diff) {
   return result;
 }
 
-const latest = [
-  {
-    path: "assets/assets2/index2.html",
-    hash: "2d45c5f7dc94e15bc5b5c806411ec817",
-  },
-  {
-    path: "assets/assets2/index2.js",
-    hash: "d41d8cd98f00b204e9800998ecf8427e",
-  },
-  {
-    path: "assets/index.css",
-    hash: "ffc2176851996047711f5e568ef8fccc",
-  },
-];
+const latestPath=process.argv[2];
+const previousPath=process.argv[3];
+const latestRaw = await fs.readFile(latestPath);
+const previousRaw = await fs.readFile(previousPath);
+const latest = JSON.parse(latestRaw);
+const previous = JSON.parse(previousRaw);
 
-const previous = [
-  {
-    path: "assets/assets2/index2.html",
-    hash: "2d45c5f7dc94e15bc5b5c806411ecaaa",
-    size: 205,
-  },
-  {
-    path: "assets/assets2/index2.js",
-    hash: "d41d8cd98f00b204e9800998ecf8427e",
-    size: 0,
-  },
-  {
-    path: "assets/index.css",
-    hash: "ffc2176851996047711f5e568ef8f0a1",
-    size: 26,
-  },
-];
+const diff = compareDiff(latest,previous);
+
+console.log(diff)
