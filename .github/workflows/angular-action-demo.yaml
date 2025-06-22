@@ -35,15 +35,21 @@ jobs:
       - name: pnpm run build
         run: pnpm run build
 
-      - name: Copy hashing tools scripts to dist
-        run: |
-          cp -a calculate_hashing_tools ./dist/
+      # - name: Copy hashing tools scripts to dist
+      #   run: |
+      #     cp -a calculate_hashing_tools ./dist/
 
       - uses: actions/upload-artifact@v4
         name: Upload artifact
         with:
           name: angular-action-demo_build
           path: ./dist/
+
+      - uses: actions/upload-artifact@v4
+        name: Upload calculate hashing tools
+        with:
+          name: calculate_hashing_tools
+          path: calculate_hashing_tools
 
   generate_timestamp:
     runs-on: ubuntu-latest
@@ -64,6 +70,11 @@ jobs:
         name: Download angular-action-artifact
         with:
           name: angular-action-demo_build
+
+      - uses: actions/download-artifact@v4
+        name: Download angular-action-artifact
+        with:
+          name: calculate_hashing_tools
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -176,11 +187,11 @@ jobs:
               -H "Accept: application/octet-stream" "$url" -o angular-action-demo.zip
 
           unzip angular-action-demo.zip
-        
+
 
       - name: Test
         run: |
           ls -lart
           cat latest.json
           cat previous.json
-          ls build_artifact
+          ls angular-action-demo
