@@ -143,8 +143,12 @@ jobs:
 
   use_github_cli:
     runs-on: macos-latest
+    needs: ["app_release"]
     steps:
       - uses: actions/checkout@v2
-      - run: gh --help
+      - run: |
+          tags=($(gh release list --limit 2 --json tagName --jq '[.[].tagName]' | jq -r '.[] | select(startswith("PROD_"))'))
+          echo "LATEST_TAG=${tags[0]}" >> $GITHUB_ENV
+          echo "PREVIOUS_TAG=${tags[1]}" >> $GITHUB_ENV
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
