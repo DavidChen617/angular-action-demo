@@ -67,7 +67,7 @@ jobs:
 
       - name: Calculate hashing
         run: |
-          Asia/Taipei
+          TZ=Asia/Taipei
           timestamp=$(date '+%Y%m%d_%H%M%S')
           pnpm -s run start ../angular-action-demo/ > ${timestamp}.json
 
