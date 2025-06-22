@@ -9,7 +9,7 @@ permissions:
   contents: write
 
 jobs:
-  app_build:
+  job_app_build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
@@ -53,9 +53,9 @@ jobs:
           name: compare_diff_tools
           path: compare_diff_tools
 
-  generate_timestamp:
+  job_generate_timestamp:
     runs-on: ubuntu-latest
-
+    needs: job_app_build
     outputs:
       timestamp: ${{ steps.ts.outputs.value }}
 
@@ -64,8 +64,8 @@ jobs:
         id: ts
         run: echo "value=$(TZ=Asia/Taipei date +%Y%m%d_%H%M%S)" >> "$GITHUB_OUTPUT"
 
-  app_calculate_hashing:
-    needs: ["app_build", "generate_timestamp"]
+  job_app_calculate_hashing:
+    needs: ["job_app_build", "job_generate_timestamp"]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4
@@ -111,8 +111,8 @@ jobs:
             ./angular-action-demo
             ./${{ needs.generate_timestamp.outputs.timestamp }}.json
 
-  app_release:
-    needs: ["app_build", "app_calculate_hashing", "generate_timestamp"]
+  job_app_create_release:
+    needs: job_app_calculate_hashing
     runs-on: ubuntu-latest
     outputs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
@@ -159,9 +159,9 @@ jobs:
           asset_name: ${{ needs.generate_timestamp.outputs.timestamp }}.json
           asset_content_type: application/json
 
-  job_Download_Artifact:
+  job_download_artifact:
     runs-on: ubuntu-latest
-    needs: ["app_release"]
+    needs: job_app_create_release
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       UPLOAD_URL: ${{ needs.app_release.outputs.upload_url }}
@@ -216,7 +216,6 @@ jobs:
 
       - name: Compare diff
         run: |
-          cd compare_diff_tools
           node compare_diff_tools/main.js ../latest.json ../previous.json ../angular-action-demo ../dist_to_deliver
 
 
