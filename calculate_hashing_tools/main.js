@@ -11,5 +11,6 @@ for (let i = 0; i < arr.length; i++) {
   md5Files.push(await md5File(arr[i]));
 }
 
-await writeJsonLog(md5Files);
+// await writeJsonLog(md5Files);
 
+console.log(await writeJsonLog(md5Files))
