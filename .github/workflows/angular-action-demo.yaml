@@ -76,4 +76,12 @@ jobs:
         run: |
           ls -ltra
           echo $(pwd)
-          cat "${{ steps.ts.outputs.value }}.json"
+          cat ${{ steps.ts.outputs.value }}.json
+
+      - uses: actions/upload-artifact@v4
+        name: Upload artifact
+        with:
+          name: angular-action-demo
+          path: |
+            ./angular-action-demo
+            ./${{ steps.ts.outputs.value }}.json
