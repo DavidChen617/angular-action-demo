@@ -65,17 +65,13 @@ jobs:
           cd calculate_hashing_tools
           pnpm install
 
-      - name: get current taiwan date
-        run: |
-          export TZ=Asia/Taipei
-          timestamp=$(date '+%Y%m%d_%H%M%S')
-          echo "timestamp=$timestamp" >> $GITHUB_ENV
-
       - name: Calculate hashing
-        run: pnpm -s run start ../angular-action-demo/ > ${timestamp}.json
+        run: |
+          Asia/Taipei
+          timestamp=$(date '+%Y%m%d_%H%M%S')
+          pnpm -s run start ../angular-action-demo/ > ${timestamp}.json
 
       - name: Test
         run: |
           ls -ltra
           echo $(pwd)
-
