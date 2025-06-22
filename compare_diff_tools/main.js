@@ -1,6 +1,6 @@
 import { promises as fs } from "fs";
-import compareDiff from "./src/compareDiff";
-import applyDiffToArtifacts from "./src/applyDiffToArtifacts";
+import compareDiff from "./src/compareDiff.js";
+import applyDiffToArtifacts from "./src/applyDiffToArtifacts.js";
 
 const latestPath = process.argv[2];
 const previousPath = process.argv[3];
