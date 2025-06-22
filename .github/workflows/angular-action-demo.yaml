@@ -141,7 +141,7 @@ jobs:
           asset_name: ${{ needs.generate_timestamp.outputs.timestamp }}.json
           asset_content_type: application/json
 
-  use_github_cli:
+  job_Download_Artifact:
     runs-on: macos-latest
     needs: ["app_release"]
     env:
@@ -173,7 +173,10 @@ jobs:
         run: |
           url=$(gh release view "$LATEST_TAG" --json assets --jq '.assets[] | select(.name | endswith(".zip")) | .url')
           curl -L -H "Authorization: token ${{ env.GH_TOKEN }}" \
-               -H "Accept: application/octet-stream" "$url" -o angular-action-demo.zip -d build_artifact
+              -H "Accept: application/octet-stream" "$url" -o angular-action-demo.zip
+
+          unzip angular-action-demo.zip -d temp
+          mv temp/angular-action-demo build_artifact
 
       - name: Test
         run: |
