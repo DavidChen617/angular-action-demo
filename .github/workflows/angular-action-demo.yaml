@@ -108,6 +108,7 @@ jobs:
   job_app_create_release:
     needs: ["job_app_calculate_hashing","job_generate_timestamp"]
     runs-on: ubuntu-latest
+
     outputs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
 
@@ -147,7 +148,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ env.UPLOAD_URL }}
           asset_path: angular-action-demo-dist-${{ needs.job_generate_timestamp.outputs.timestamp }}.zip
           asset_name: angular-action-demo-dist-${{ needs.job_generate_timestamp.outputs.timestamp }}.zip
           asset_content_type: application/zip
