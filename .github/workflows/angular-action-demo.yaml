@@ -112,11 +112,6 @@ jobs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
 
     steps:
-      - uses: actions/download-artifact@v4
-        name: Download angular-action-artifact
-        with:
-          name: angular-action-demo_calculated
-
       - name: Create GitHub app_Release
         id: create_release
         uses: comnoco/create-release-action@v2
@@ -138,6 +133,11 @@ jobs:
       UPLOAD_URL: ${{ needs.job_app_create_release.outputs.upload_url }}
 
     steps:
+      - uses: actions/download-artifact@v4
+        name: Download angular-action-artifact
+        with:
+          name: angular-action-demo_calculated
+
       - name: Zip demo folder
         run: |
           zip -r angular-action-demo-dist-${{ needs.job_generate_timestamp.outputs.timestamp }}.zip angular-action-demo
