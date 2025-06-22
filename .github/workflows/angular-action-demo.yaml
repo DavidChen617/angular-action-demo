@@ -81,7 +81,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         name: Upload artifact
         with:
-          name: angular-action-demo
+          name: angular-action-demo_build
           path: |
             ./angular-action-demo
             ./${{ steps.ts.outputs.value }}.json
