@@ -154,27 +154,29 @@ jobs:
           echo "PREVIOUS_TAG=${tags[1]}" >> $GITHUB_ENV
           echo "LATEST_TAG=${tags[0]}"
           echo "PREVIOUS_TAG=${tags[1]}"
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Download latest hash.json
         run: |
           url=$(gh release view "$LATEST_TAG" --json assets --jq '.assets[] | select(.name | endswith(".json")) | .url')
-          curl -L -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          curl -L -H "Authorization: token ${{ env.GH_TOKEN }}" \
               -H "Accept: application/octet-stream" \
               "$url" -o latest.json
 
       - name: Download previous hash.json
         run: |
           url=$(gh release view "$PREVIOUS_TAG" --json assets --jq '.assets[] | select(.name | endswith(".json")) | .url')
-          curl -L -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          curl -L -H "Authorization: token ${{ env.GH_TOKEN }}" \
               -H "Accept: application/octet-stream" \
               "$url" -o previous.json
 
       - name: Download latest ZIP
         run: |
           url=$(gh release view "$LATEST_TAG" --json assets --jq '.assets[] | select(.name | endswith(".zip")) | .url')
-          curl -L -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-               -H "Accept: application/octet-stream" "$url" -o angular-action-demo.zip
+          curl -L -H "Authorization: token ${{ env.GH_TOKEN }}" \
+               -H "Accept: application/octet-stream" "$url" -o angular-action-demo.zip > build_artifact
       - name: Test
-        run: ls -lart
+        run: |
+          ls -lart
+          cat latest.json
+          cat previous.json
+          ls build_artifact
