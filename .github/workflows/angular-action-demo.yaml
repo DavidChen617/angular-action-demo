@@ -36,17 +36,28 @@ jobs:
       - uses: actions/upload-artifact@v4
         name: Upload artifact
         with:
-          name: angular-action-demo
+          name: angular-action-demo_build
           path: ./dist/
 
-  app_test:
-    needs: app_build
+  generate_timestamp:
+    runs-on: ubuntu-latest
+
+    outputs:
+      timestamp: ${{ steps.ts.outputs.value }}
+
+    steps:
+      - name: Generate timestamp
+        id: ts
+        run: echo "value=$(TZ=Asia/Taipei date +%Y%m%d_%H%M%S)" >> "$GITHUB_OUTPUT"
+
+  app_calculate_hashing:
+    needs: ["app_build", "generate_timestamp"]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4
         name: Download angular-action-artifact
         with:
-          name: angular-action-demo
+          name: angular-action-demo_build
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -58,58 +69,68 @@ jobs:
         with:
           node-version: "20"
 
-      # - name: Debug - List directories
-      #   run: |
-      #     echo "Current directory: $(pwd)"
-      #     echo "Contents:"
-      #     ls -la
-      #     echo "angular-action-demo contents:"
-      #     ls -la angular-action-demo/ || echo "angular-action-demo directory not found"
-      #     echo "calculate_hashing_tools contents:"
-      #     ls -la calculate_hashing_tools/ || echo "calculate_hashing_tools directory not found"
-
-      # - name: Calculate hashing (with error handling)
-      #   run: |
-      #     cd calculate_hashing_tools
-      #     echo "Installing dependencies..."
-      #     pnpm install
-      #     echo "Running hashing calculation..."
-      #     # 移除 -s 參數以顯示錯誤訊息
-      #     pnpm run start ../angular-action-demo/ > ../${{ steps.ts.outputs.value }}.json
-      #     echo "Command exit code: $?"
-      #     echo "Output file size: $(wc -c < ../${{ steps.ts.outputs.value }}.json)"
-
-      # - name: Debug output file
-      #   run: |
-      #     echo "Checking if output file exists..."
-      #     if [ -f ${{ steps.ts.outputs.value }}.json ]; then
-      #       echo "File exists, size: $(wc -c < ${{ steps.ts.outputs.value }}.json)"
-      #       echo "First few lines:"
-      #       head -10 ${{ steps.ts.outputs.value }}.json
-      #     else
-      #       echo "Output file does not exist!"
-      #     fi
-
-      - name: Generate timestamp
-        id: ts
-        run: echo "value=$(TZ=Asia/Taipei date +%Y%m%d_%H%M%S)" >> "$GITHUB_OUTPUT"
-
       - name: setup hashing tools
         run: |
           cd calculate_hashing_tools
           pnpm install
-          pnpm -s run start ../angular-action-demo/ > ../${{ steps.ts.outputs.value }}.json
+          pnpm -s run start ../angular-action-demo/ > ../${{ needs.generate_timestamp.outputs.timestamp }}.json
 
       - name: Test
         run: |
           ls -ltra
           echo $(pwd)
-          cat ${{ steps.ts.outputs.value }}.json
+          cat ${{ needs.generate_timestamp.outputs.timestamp }}.json
 
       - uses: actions/upload-artifact@v4
         name: Upload artifact
         with:
-          name: angular-action-demo_build
+          name: angular-action-demo_calculated
           path: |
             ./angular-action-demo
-            ./${{ steps.ts.outputs.value }}.json
+            ./${{ needs.generate_timestamp.outputs.timestamp }}.json
+
+  app_release:
+    needs: ["app_build", "app_app_calculate_hashing", "generate_timestamp"]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/download-artifact@v4
+        name: Download angular-action-artifact
+        with:
+          name: angular-action-demo_calculated
+
+      - name: Create GitHub app_Release
+        id: create_release
+        uses: comnoco/create-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: "自動化釋出：包含 Angular build 與 hash 檔"
+          draft: false
+          prerelease: false
+
+      - name: Zip demo folder
+        run: |
+          zip -r angular-action-demo-${{needs.generate_timestamp.outputs.timestamp}}.zip angular-action-demo
+
+      - name: Upload demo ZIP to Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: angular-action-demo-${{ needs.generate_timestamp.outputs.timestamp }}.zip
+          asset_name: angular-action-demo-${{ needs.generate_timestamp.outputs.timestamp }}.zip
+          asset_content_type: application/zip
+
+      - name: Upload JSON to Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url:        ${{ steps.create_release.outputs.upload_url }}
+          asset_path:        ${{ needs.generate_timestamp.outputs.timestamp }}.json
+          asset_name:        ${{ needs.generate_timestamp.outputs.timestamp }}.json
+          asset_content_type: application/json
