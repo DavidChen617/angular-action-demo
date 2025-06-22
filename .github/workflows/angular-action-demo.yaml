@@ -141,4 +141,10 @@ jobs:
           asset_name:        ${{ needs.generate_timestamp.outputs.timestamp }}.json
           asset_content_type: application/json
 
-          
+  use_github_cli:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: gh --help
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
