@@ -65,15 +65,19 @@ jobs:
           cd calculate_hashing_tools
           pnpm install
 
+      - name: Generate timestamp
+        id: ts
+        run: echo "value=$(TZ=Asia/Taipei date +%Y%m%d_%H%M%S)" >> "$GITHUB_OUTPUT"
+
       - name: Calculate hashing
         run: |
           cd calculate_hashing_tools
           TZ=Asia/Taipei
           timestamp=$(date '+%Y%m%d_%H%M%S')
-          pnpm -s run start ../angular-action-demo/ > ../${timestamp}.json
+          pnpm -s run start ../angular-action-demo/ > ../${steps.ts.outputs.value}.json
 
       - name: Test
         run: |
           ls -ltra
           echo $(pwd)
-          cat ${timestamp}.json
+          cat "${{ steps.ts.outputs.value }}.json"
