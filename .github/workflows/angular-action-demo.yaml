@@ -150,5 +150,7 @@ jobs:
           tags=($(gh release list --limit 2 --json tagName --jq '[.[].tagName]' | jq -r '.[] | select(startswith("PROD_"))'))
           echo "LATEST_TAG=${tags[0]}" >> $GITHUB_ENV
           echo "PREVIOUS_TAG=${tags[1]}" >> $GITHUB_ENV
+          echo "LATEST_TAG=${tags[0]}"
+          echo "PREVIOUS_TAG=${tags[1]}"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
