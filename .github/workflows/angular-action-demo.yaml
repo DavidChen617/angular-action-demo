@@ -96,7 +96,9 @@ jobs:
 
       - name: setup hashing tools
         run: |
+          ls angular-action-demo
           cd calculate_hashing_tools
+          ls ../angular-action-demo/
           pnpm install
           pnpm -s run start ../angular-action-demo/ > ../${{ steps.ts.outputs.value }}.json
           cat ../${{ steps.ts.outputs.value }}.json
