@@ -59,12 +59,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          # cache: "pnpm"
 
       - name: setup hashing tools
         run: |
           cd calculate_hashing_tools
-          pnpm run install
+          pnpm install
 
       - name: get current taiwan date
         run: |
