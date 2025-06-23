@@ -133,7 +133,7 @@ jobs:
           draft: false
           prerelease: false
 
-  job_zip_and_upload_dist_to_release:
+  job_upload_hash_file_and_dist_to_release:
     runs-on: ubuntu-latest
     needs: ["job_app_create_release", "job_generate_timestamp"]
 
@@ -172,12 +172,12 @@ jobs:
           asset_name: ${{env.HASH_FILE}}
           asset_content_type: application/json
 
-  job_download_artifact:
+  job_compare_diff_and_upload_to_release:
     runs-on: ubuntu-latest
     needs:
       [
         "job_app_create_release",
-        "job_zip_and_upload_dist_to_release",
+        "job_upload_hash_file_and_dist_to_release",
         "job_generate_timestamp",
       ]
 
@@ -204,28 +204,6 @@ jobs:
           echo "LATEST_TAG=${tags[0]}"
           echo "PREVIOUS_TAG=${tags[1]}"
 
-      # - name: Download latest hash.json
-      #   run: |
-      #     url=$(gh release view "$LATEST_TAG" --json assets --jq '.assets[] | select(.name | endswith(".json")) | .url')
-      #     curl -L -H "Authorization: token ${{ env.GH_TOKEN }}" \
-      #         -H "Accept: application/octet-stream" \
-      #         "$url" -o latest.json
-
-      # - name: Download previous hash.json
-      #   run: |
-      #     url=$(gh release view "$PREVIOUS_TAG" --json assets --jq '.assets[] | select(.name | endswith(".json")) | .url')
-      #     curl -L -H "Authorization: token ${{ env.GH_TOKEN }}" \
-      #         -H "Accept: application/octet-stream" \
-      #         "$url" -o previous.json
-
-      # - name: Download latest ZIP
-      #   run: |
-      #     url=$(gh release view "$LATEST_TAG" --json assets --jq '.assets[] | select(.name | endswith(".zip")) | .url')
-      #     curl -L -H "Authorization: token ${{ env.GH_TOKEN }}" \
-      #         -H "Accept: application/octet-stream" "$url" -o ${{env.PROJECT_NAME}}.zip
-
-      #     unzip ${{env.PROJECT_NAME}}.zip
-
       - name: Download release asstest
         run: |
           #定義下載函式
@@ -233,9 +211,10 @@ jobs:
             # parameter
             local tag=$1
             local file_extension=$2
+            local output_file=$3
+
             # 字串拼接 解決參數在jq中不生效問題
             local jq_filter=".assets[] | select(.name | endswith(\"${file_extension}\")) | .url"
-            local output_file=$3
 
             url=$(gh release view "$tag" --json assets --jq "$jq_filter")
             curl -L -H "Authorization: token ${{ env.GH_TOKEN }}" \
