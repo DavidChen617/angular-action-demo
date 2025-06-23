@@ -232,7 +232,8 @@ jobs:
           download_asset() {
             # parameter
             local tag=$1
-            # local file_extension=$2
+            local file_extension=$2
+            # 字串拼接 解決參數在jq中不生效問題
             local jq_filter=".assets[] | select(.name | endswith(\"${file_extension}\")) | .url"
             local output_file=$3
 
