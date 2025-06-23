@@ -225,7 +225,7 @@ jobs:
           download_asset "$PREVIOUS_TAG" ".json" "previous.json"
 
           # 下載打包好的檔案
-          download_asset "$PREVIOUS_TAG" ".zip" "${{env.PROJECT_NAME}}.zip"
+          download_asset "$LATEST_TAG" ".zip" "${{env.PROJECT_NAME}}.zip"
 
           unzip ${{env.PROJECT_NAME}}.zip
       - name: Test
