@@ -230,6 +230,11 @@ jobs:
         run: |
           #定義下載函式
           download_asset() {
+            # parameter
+            local tag=$1
+            local file_extension=$2
+            local output_file=$3
+
             url=$(gh release view "$tag" --json assets --jq '.assets[] | select(.name | endswith(\"$file_extension\")) | .url')
             curl -L -H "Authorization: token ${{ env.GH_TOKEN }}" \
               -H "Accept: application/octet-stream" "$url" -o "$output_file"
