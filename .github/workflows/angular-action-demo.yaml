@@ -195,6 +195,7 @@ jobs:
       - name: Debug
         run: ls -lart
 
+      # 取得這次上線與上一次上線的tag並存到GITHUB環境變數
       - name: Setup env
         run: |
           tags=($(gh release list --limit 2 --json tagName --jq '[.[].tagName]' | jq -r '.[] | select(startswith("PROD_"))'))
@@ -203,28 +204,44 @@ jobs:
           echo "LATEST_TAG=${tags[0]}"
           echo "PREVIOUS_TAG=${tags[1]}"
 
-      - name: Download latest hash.json
-        run: |
-          url=$(gh release view "$LATEST_TAG" --json assets --jq '.assets[] | select(.name | endswith(".json")) | .url')
-          curl -L -H "Authorization: token ${{ env.GH_TOKEN }}" \
-              -H "Accept: application/octet-stream" \
-              "$url" -o latest.json
+      # - name: Download latest hash.json
+      #   run: |
+      #     url=$(gh release view "$LATEST_TAG" --json assets --jq '.assets[] | select(.name | endswith(".json")) | .url')
+      #     curl -L -H "Authorization: token ${{ env.GH_TOKEN }}" \
+      #         -H "Accept: application/octet-stream" \
+      #         "$url" -o latest.json
 
-      - name: Download previous hash.json
-        run: |
-          url=$(gh release view "$PREVIOUS_TAG" --json assets --jq '.assets[] | select(.name | endswith(".json")) | .url')
-          curl -L -H "Authorization: token ${{ env.GH_TOKEN }}" \
-              -H "Accept: application/octet-stream" \
-              "$url" -o previous.json
+      # - name: Download previous hash.json
+      #   run: |
+      #     url=$(gh release view "$PREVIOUS_TAG" --json assets --jq '.assets[] | select(.name | endswith(".json")) | .url')
+      #     curl -L -H "Authorization: token ${{ env.GH_TOKEN }}" \
+      #         -H "Accept: application/octet-stream" \
+      #         "$url" -o previous.json
 
-      - name: Download latest ZIP
+      # - name: Download latest ZIP
+      #   run: |
+      #     url=$(gh release view "$LATEST_TAG" --json assets --jq '.assets[] | select(.name | endswith(".zip")) | .url')
+      #     curl -L -H "Authorization: token ${{ env.GH_TOKEN }}" \
+      #         -H "Accept: application/octet-stream" "$url" -o ${{env.PROJECT_NAME}}.zip
+
+      #     unzip ${{env.PROJECT_NAME}}.zip
+
+      - name: Download release asstest
         run: |
-          url=$(gh release view "$LATEST_TAG" --json assets --jq '.assets[] | select(.name | endswith(".zip")) | .url')
-          curl -L -H "Authorization: token ${{ env.GH_TOKEN }}" \
-              -H "Accept: application/octet-stream" "$url" -o ${{env.PROJECT_NAME}}.zip
+          #定義下載函式
+          download_asset() {
+            url=$(gh release view "$tag" --json assets --jq '.assets[] | select(.name | endswith(\"$file_extension\")) | .url')
+            curl -L -H "Authorization: token ${{ env.GH_TOKEN }}" \
+              -H "Accept: application/octet-stream" "$url" -o "$output_file"
+          }
+          # 下載這次與上次hash.json 做差異比較
+          download_asset "$LATEST_TAG" ".json" "latest.json"
+          download_asset "$PREVIOUS_TAG" ".json" "previous.json"
+
+          # 下載打包好的檔案
+          download_asset "$PREVIOUS_TAG" ".zip" "${{env.PROJECT_NAME}}.zip"
 
           unzip ${{env.PROJECT_NAME}}.zip
-
       - name: Test
         run: |
           ls -lart
