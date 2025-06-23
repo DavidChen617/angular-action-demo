@@ -9,12 +9,6 @@ env:
   PNPM_VERSION: 10
   NODE_VERSION: 22
   PROJECT_NAME: "angular-action-demo"
-  DOWNLOAD_ARTIFACT_VERSION: 4
-  UPLOAD_ARTIFACT_VERSION: 4
-  SETUP_NODE_VERSION: 4
-  SETUP_PNPM_VERSION: 4
-  COMNOCO_CREATE_RELEASE_VERSION: 2
-  UPLOAD_RELEASE_VERSION: 1
 
 permissions:
   contents: write
@@ -27,12 +21,12 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v${{env.SETUP_PNPM_VERSION}}
+        uses: pnpm/action-setup@v4
         with:
           version: ${{ env.PNPM_VERSION }}
 
       - name: Setup node
-        uses: actions/setup-node@v${{env.SETUP_NODE_VERSION}}
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: "pnpm"
@@ -43,26 +37,26 @@ jobs:
       - name: pnpm run build
         run: pnpm run build
 
-      - uses: actions/upload-artifact@v${{env.UPLOAD_ARTIFACT_VERSION}}
+      - uses: actions/upload-artifact@v4
         name: Upload .git artifact
         with:
           name: dot_git
           path: .git
           include-hidden-files: true
 
-      - uses: actions/upload-artifact@v${{env.UPLOAD_ARTIFACT_VERSION}}
+      - uses: actions/upload-artifact@v4
         name: Upload artifact
         with:
           name: ${{env.PROJECT_NAME}}_build
           path: ./dist/
 
-      - uses: actions/upload-artifact@v${{env.UPLOAD_ARTIFACT_VERSION}}
+      - uses: actions/upload-artifact@v4
         name: Upload calculate hash tools
         with:
           name: calculate_hash_tools
           path: .github/tools/calculate_hash_tools
 
-      - uses: actions/upload-artifact@v${{env.UPLOAD_ARTIFACT_VERSION}}
+      - uses: actions/upload-artifact@v4
         name: Upload compare diff tools
         with:
           name: compare_diff_tools
@@ -86,23 +80,23 @@ jobs:
     env:
       HASH_FILE: hash-diff-${{ needs.job_generate_timestamp.outputs.timestamp }}.json
     steps:
-      - uses: actions/download-artifact@v${{env.DOWNLOAD_ARTIFACT_VERSION}}
+      - uses: actions/download-artifact@v4
         name: Download angular-action-artifact
         with:
           name: ${{env.PROJECT_NAME}}_build
 
-      - uses: actions/download-artifact@v${{env.DOWNLOAD_ARTIFACT_VERSION}}
+      - uses: actions/download-artifact@v4
         name: Download angular-action-artifact
         with:
           name: calculate_hash_tools
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v${{env.SETUP_PNPM_VERSION}}
+        uses: pnpm/action-setup@v4
         with:
           version: ${{env.PNPM_VERSION}}
 
       - name: Setup node
-        uses: actions/setup-node@v${{env.SETUP_NODE_VERSION}}
+        uses: actions/setup-node@v4
         with:
           node-version: ${{env.NODE_VERSION}}
 
@@ -111,7 +105,7 @@ jobs:
           pnpm install
           pnpm -s run start ${{env.PROJECT_NAME}}/ > ${{env.HASH_FILE}}
 
-      - uses: actions/upload-artifact@v${{env.UPLOAD_ARTIFACT_VERSION}}
+      - uses: actions/upload-artifact@v4
         name: Upload hash artifact
         with:
           name: ${{env.PROJECT_NAME}}_calculated
@@ -129,7 +123,7 @@ jobs:
     steps:
       - name: Create GitHub app_Release
         id: create_release
-        uses: comnoco/create-release-action@v${{env.COMNOCO_CREATE_RELEASE_VERSION}}
+        uses: comnoco/create-release-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -149,7 +143,7 @@ jobs:
       HASH_FILE: hash-diff-${{ needs.job_generate_timestamp.outputs.timestamp }}.json
 
     steps:
-      - uses: actions/download-artifact@v${{env.DOWNLOAD_ARTIFACT_VERSION}}
+      - uses: actions/download-artifact@v4
         name: Download angular-action-artifact
         with:
           name: ${{env.PROJECT_NAME}}_calculated
@@ -159,7 +153,7 @@ jobs:
           zip -r ${{env.PROJECT_NAME}}-dist-${{ needs.job_generate_timestamp.outputs.timestamp }}.zip ${{env.PROJECT_NAME}}
 
       - name: Upload demo ZIP to Release
-        uses: actions/upload-release-asset@v${{env.UPLOAD_RELEASE_VERSION}}
+        uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -169,7 +163,7 @@ jobs:
           asset_content_type: application/zip
 
       - name: Upload JSON to Release
-        uses: actions/upload-release-asset@v${{env.UPLOAD_RELEASE_VERSION}}
+        uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -193,7 +187,7 @@ jobs:
       RELEASE_DIFF_FILES: release_diff_files-${{ needs.job_generate_timestamp.outputs.timestamp }}
 
     steps:
-      - uses: actions/download-artifact@v${{env.DOWNLOAD_ARTIFACT_VERSION}}
+      - uses: actions/download-artifact@v4
         name: Download dot_git
         with:
           name: dot_git
@@ -239,16 +233,16 @@ jobs:
           ls ${{env.PROJECT_NAME}}
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v${{env.SETUP_PNPM_VERSION}}
+        uses: pnpm/action-setup@v4
         with:
           version: ${{env.PNPM_VERSION}}
 
       - name: Setup node
-        uses: actions/setup-node@v${{env.SETUP_NODE_VERSION}}
+        uses: actions/setup-node@v4
         with:
           node-version: ${{env.NODE_VERSION}}
 
-      - uses: actions/download-artifact@v${{env.DOWNLOAD_ARTIFACT_VERSION}}
+      - uses: actions/download-artifact@v4
         name: Download compare_diff_tools
         with:
           name: compare_diff_tools
@@ -262,7 +256,7 @@ jobs:
           zip -r ${{env.RELEASE_DIFF_FILES}}.zip ${{env.RELEASE_DIFF_FILES}}
 
       - name: Upload demo ZIP to Release
-        uses: actions/upload-release-asset@v${{env.UPLOAD_RELEASE_VERSION}}
+        uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
