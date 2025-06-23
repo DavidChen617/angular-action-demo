@@ -19,9 +19,6 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
-      - name: List file
-        run: ls -lrta
-
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
@@ -38,9 +35,6 @@ jobs:
 
       - name: pnpm run build
         run: pnpm run build
-
-      - name: Debug
-        run: ls -lart
 
       - uses: actions/upload-artifact@v4
         name: Upload .git artifact
@@ -59,13 +53,14 @@ jobs:
         name: Upload calculate hashing tools
         with:
           name: calculate_hashing_tools
-          path: calculate_hashing_tools
+          path: .github/tools/calculate_hashing_tools
 
       - uses: actions/upload-artifact@v4
         name: Upload compare diff tools
         with:
           name: compare_diff_tools
-          path: compare_diff_tools
+          path: .github/tools/compare_diff_tools
+          include-hidden-files: true
 
   job_generate_timestamp:
     runs-on: ubuntu-latest

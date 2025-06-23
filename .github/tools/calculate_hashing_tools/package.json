@@ -1,0 +1,13 @@
+{
+  "name": "recursion",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "recursion.js",
+  "scripts": {
+    "start": "node main.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
