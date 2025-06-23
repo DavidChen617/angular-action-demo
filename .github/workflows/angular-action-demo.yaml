@@ -132,6 +132,9 @@ jobs:
           body: "自動化釋出：包含 Angular build 與 hash 檔"
           draft: false
           prerelease: false
+      - name: set upload_url output
+        id: set_output
+        run: echo "upload_url=${{ steps.create_release.outputs.upload_url }}" >> $GITHUB_OUTPUT
 
   job_upload_hash_file_and_dist_to_release:
     runs-on: ubuntu-latest
