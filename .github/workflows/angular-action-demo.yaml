@@ -232,10 +232,11 @@ jobs:
           download_asset() {
             # parameter
             local tag=$1
-            local file_extension=$2
+            # local file_extension=$2
+            local jq_filter=".assets[] | select(.name | endswith(\"${file_extension}\")) | .url"
             local output_file=$3
 
-            url=$(gh release view "$tag" --json assets --jq '.assets[] | select(.name | endswith("$file_extension")) | .url')
+            url=$(gh release view "$tag" --json assets --jq "$jq_filter")
             curl -L -H "Authorization: token ${{ env.GH_TOKEN }}" \
               -H "Accept: application/octet-stream" "$url" -o "$output_file"
           }
